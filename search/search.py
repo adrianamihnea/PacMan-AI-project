@@ -76,23 +76,94 @@ def depthFirstSearch(problem: SearchProblem):
     """
     Search the deepest nodes in the search tree first.
 
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
+    Your search algorithm needs to return a list of actions that reaches
+    the goal. Make sure to implement a graph search algorithm.
 
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
+    Parameters:
+    problem : search.SearchProblem
+        A SearchProblem class instance describing the search problem.
 
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+    Returns:
+    list of actions
+        The solution as a list of actions to take.
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Initialize the fringe with the start state and an empty list of actions
+    fringe = util.Stack()
+    fringe.push((problem.getStartState(), []))
+
+    # Initialize a set to keep track of visited states
+    visited = set()
+
+    while not fringe.isEmpty():
+        # Pop the top node from the stack
+        state, actions = fringe.pop()
+
+        # Check if the current state is the goal state
+        if problem.isGoalState(state):
+            return actions
+
+        # Check if the current state has already been visited
+        if state not in visited:
+            # Mark the current state as visited
+            visited.add(state)
+
+            # Get the successors of the current state
+            successors = problem.getSuccessors(state)
+
+            # Push each successor onto the stack with the updated list of actions
+            for successor in successors:
+                next_state, action, cost = successor
+                next_actions = actions + [action]
+                fringe.push((next_state, next_actions))
+
+    return []  # Return an empty list if no solution is found
+
 
 def breadthFirstSearch(problem: SearchProblem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    """
+    Search the shallowest nodes in the search tree first.
+
+    Your search algorithm needs to return a list of actions that reaches
+    the goal. Make sure to implement a graph search algorithm.
+
+    Parameters:
+    problem : search.SearchProblem
+        A SearchProblem class instance describing the search problem.
+
+    Returns:
+    list of actions
+        The solution as a list of actions to take.
+    """
+    # Initialize the fringe with the start state and an empty list of actions
+    fringe = util.Queue()
+    fringe.push((problem.getStartState(), []))
+
+    # Initialize a set to keep track of visited states
+    visited = set()
+
+    while not fringe.isEmpty():
+        # Pop the front node from the queue
+        state, actions = fringe.pop()
+
+        # Check if the current state is the goal state
+        if problem.isGoalState(state):
+            return actions
+
+        # Check if the current state has already been visited
+        if state not in visited:
+            # Mark the current state as visited
+            visited.add(state)
+
+            # Get the successors of the current state
+            successors = problem.getSuccessors(state)
+
+            # Enqueue each successor with the updated list of actions
+            for successor in successors:
+                next_state, action, cost = successor
+                next_actions = actions + [action]
+                fringe.push((next_state, next_actions))
+
+    return []  # Return an empty list if no solution is found
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
