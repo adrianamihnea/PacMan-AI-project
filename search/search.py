@@ -16,8 +16,17 @@
 In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
-
+import random
 import util
+
+class CustomNode :
+    def __init__ (self , name , cost ):
+        self.name = name # attribute name
+        self.cost = cost # attribute cost
+    def getName ( self ):
+        return self.name
+    def getCost ( self ):
+        return self.cost
 
 class SearchProblem:
     """
@@ -72,103 +81,136 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+def randomSearch ( problem ):
+    current = problem.getStartState()
+    solution =[]
+    while (not (problem . isGoalState (current))):
+        succ = problem . getSuccessors(current)
+        no_of_successors = len (succ)
+        random_succ_index = int(random.random() * no_of_successors)
+        next = succ [ random_succ_index ]
+        current = next [0]
+        solution.append (next [1])
+    print("The  solution  is ", solution)
+    return solution
+
 def depthFirstSearch(problem: SearchProblem):
     """
     Search the deepest nodes in the search tree first.
 
-    Your search algorithm needs to return a list of actions that reaches
-    the goal. Make sure to implement a graph search algorithm.
+    Your search algorithm needs to return a list of actions that reaches the
+    goal. Make sure to implement a graph search algorithm.
 
-    Parameters:
-    problem : search.SearchProblem
-        A SearchProblem class instance describing the search problem.
-
-    Returns:
-    list of actions
-        The solution as a list of actions to take.
+    To get started, you might want to try some of these simple commands to
+    understand the search problem that is being passed in:
     """
-    # Initialize the fringe with the start state and an empty list of actions
-    fringe = util.Stack()
-    fringe.push((problem.getStartState(), []))
 
-    # Initialize a set to keep track of visited states
-    visited = set()
+    # print("Start:", problem.getStartState())
+    # print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    # successors = problem.getSuccessors(problem.getStartState())
+    # print("Start's successors:", successors)
+    #
+    # for successor in successors:
+    #     state, action, cost = successor
+    #     print("\tstate: ", state)
+    #     print("\taction: ", action)
+    #     print("\tcost: ", cost)
 
-    while not fringe.isEmpty():
-        # Pop the top node from the stack
-        state, actions = fringe.pop()
+    # from game import Directions
+    # w = Directions.WEST
+    # return [w, w]
 
-        # Check if the current state is the goal state
-        if problem.isGoalState(state):
-            return actions
+    # node1 = CustomNode(" first ", 3)  # creates a new object
+    # node2 = CustomNode(" second ", 10)
+    # print(" Create  a  stack ")
+    # my_stack = util.Stack()
+    # print(" Push  the new  node   into  the  stack ")
+    # my_stack.push(node1)
+    # my_stack.push(node2)
+    # print("Pop an  element   from  the  stack ")
+    # extracted = my_stack.pop()  # call a method of the object
+    # print(" Extracted   node  is ", extracted.getName(), " ", extracted.getCost())
 
-        # Check if the current state has already been visited
-        if state not in visited:
-            # Mark the current state as visited
+    "*** YOUR CODE HERE ***"
+    visited = set()     #keep track of the visited nodes in the graph
+    my_stack = util.Stack()         #initialise an empty stack
+    start = problem.getStartState()
+    #every node in the stack: position + solution until that position
+    my_stack.push((start, []))
+
+    solution = []       # solution will be something like: "North", "West", ... (for now it's empty cause we didn't go anywhere)
+    while not my_stack.isEmpty():
+        state, action = my_stack.pop()
+        if(problem.isGoalState(state)):      #we arrived at the food
+            return action
+        if(state not in visited):
             visited.add(state)
-
-            # Get the successors of the current state
             successors = problem.getSuccessors(state)
-
-            # Push each successor onto the stack with the updated list of actions
             for successor in successors:
-                next_state, action, cost = successor
-                next_actions = actions + [action]
-                fringe.push((next_state, next_actions))
+                succ_state, succ_action, succ_cost = successor
+                solution = action + [succ_action]
+                my_stack.push((succ_state, solution))
 
-    return []  # Return an empty list if no solution is found
+    return solution
+    "*** COMPLETED ***"
+
+    # util.raiseNotDefined()
 
 
 def breadthFirstSearch(problem: SearchProblem):
-    """
-    Search the shallowest nodes in the search tree first.
+    """Search the shallowest nodes in the search tree first."""
+    "*** YOUR CODE HERE ***"
+    visited = set()     #keep track of the visited nodes in the graph
+    my_queue = util.Queue()         #initialise an empty queue
+    start = problem.getStartState()
+    #every node in the queue: position + solution until that position
+    my_queue.push((start, []))
 
-    Your search algorithm needs to return a list of actions that reaches
-    the goal. Make sure to implement a graph search algorithm.
-
-    Parameters:
-    problem : search.SearchProblem
-        A SearchProblem class instance describing the search problem.
-
-    Returns:
-    list of actions
-        The solution as a list of actions to take.
-    """
-    # Initialize the fringe with the start state and an empty list of actions
-    fringe = util.Queue()
-    fringe.push((problem.getStartState(), []))
-
-    # Initialize a set to keep track of visited states
-    visited = set()
-
-    while not fringe.isEmpty():
-        # Pop the front node from the queue
-        state, actions = fringe.pop()
-
-        # Check if the current state is the goal state
-        if problem.isGoalState(state):
-            return actions
-
-        # Check if the current state has already been visited
-        if state not in visited:
-            # Mark the current state as visited
+    solution = []       # solution will be something like: "North", "West", ... (for now it's empty cause we didn't go anywhere)
+    while not my_queue.isEmpty():
+        state, action = my_queue.pop()
+        if(problem.isGoalState(state)):      #we arrived at the food
+            return action
+        if(state not in visited):
             visited.add(state)
-
-            # Get the successors of the current state
             successors = problem.getSuccessors(state)
-
-            # Enqueue each successor with the updated list of actions
             for successor in successors:
-                next_state, action, cost = successor
-                next_actions = actions + [action]
-                fringe.push((next_state, next_actions))
+                succ_state, succ_action, succ_cost = successor
+                solution = action + [succ_action]
+                my_queue.push((succ_state, solution))
 
-    return []  # Return an empty list if no solution is found
+    return solution
+    "*** COMPLETED ***"
+
+    #util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
+
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    visited = set()  # keep track of the visited nodes in the graph
+    priority_queue = util.PriorityQueue()  # initialise an empty priority queue
+    start = problem.getStartState()
+    # every node in the priority queue: item(position + solution until that position) & cost
+    priority_queue.push((start, []), 0)
+
+    solution = []  # solution will be something like: "North", "West", ... (for now it's empty cause we didn't go anywhere)
+    while not priority_queue.isEmpty():
+        (state, action) = priority_queue.pop()      #returns only the item without cost
+        if (problem.isGoalState(state)):  # we arrived at the food
+            return action
+        if (state not in visited):
+            visited.add(state)
+            successors = problem.getSuccessors(state)
+            for successor in successors:
+                succ_state, succ_action, cost = successor
+                solution = action + [succ_action]
+                priority_queue.push((succ_state, solution), problem.getCostOfActions(solution))
+
+    return solution
+    "*** COMPLETED ***"
+
+    # util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
     """
@@ -188,3 +230,4 @@ bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
 ucs = uniformCostSearch
+rs = randomSearch
