@@ -170,6 +170,7 @@ def breadthFirstSearch(problem: SearchProblem):
     while not my_queue.isEmpty():
         state, action = my_queue.pop()
         if(problem.isGoalState(state)):      #we arrived at the food
+            # visited = set()
             return action
         if(state not in visited):
             visited.add(state)

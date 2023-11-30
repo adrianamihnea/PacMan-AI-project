@@ -292,6 +292,22 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        # self.corners_reached = {
+        #     self.corners[0]: False,
+        #     self.corners[1]: False,
+        #     self.corners[2]: False,
+        #     self.corners[3]: False,
+        # }
+        # self.goal = {
+        #     self.corners[0]: True,
+        #     self.corners[1]: True,
+        #     self.corners[2]: True,
+        #     self.corners[3]: True,
+        # }
+        # self.costFn = lambda x: 1
+        # # For display purposes
+        # self.visited, self.visitedlist, self._expanded = {}, [], 0  # DO NOT CHANGE
+        "*** COMPLETED ***"
 
     def getStartState(self):
         """
@@ -299,14 +315,54 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # return self.startingPosition
+        # if self.corners_reached.values() == [False, False, False, False]:
+        #     return self.startingPosition
+        # if all(value is False for value in self.corners_reached.values()):
+        #     return self.startingPosition
+        # for corner in self.corners_reached:
+        #     if self.corners_reached[corner] == True:
+        #         return pacman.GameState.getPacmanPosition()
+        # return self.startingPosition
+        # or maybe replace with the last found corner
+
+        # the state is defined by current pacman position + corners left to visit
+        # at start, all corners are left to be visited
+        remaining_corners = self.corners
+        return (self.startingPosition, remaining_corners)
+        "*** COMPLETED ***"
+        # util.raiseNotDefined()
 
     def isGoalState(self, state: Any):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # isGoal = False
+        # if state in self.corners and state in self.visitedlist:
+        #     # print("Current State:", state)
+        #     self.corners_reached[state] = True
+        #     # print("Corners Reached:", self.corners_reached)
+        # if self.corners_reached.values() == [True, True, True, True]:
+        #     print(self.corners_reached.values() == [True, True, True, True])
+        #     isGoal = True
+        # else:
+        #     isGoal = False
+        pacman_position, remaining_corners = state
+        return len(remaining_corners) == 0
+        "*** COMPLETED ***"
+
+        # if isGoal and self.visualize:
+        #     self.visitedlist.append(state)
+        #     import __main__
+        #     if '_display' in dir(__main__):
+        #         if 'drawExpandedCells' in dir(__main__._display): #@UndefinedVariable
+        #             __main__._display.drawExpandedCells(self.visitedlist) #@UndefinedVariable
+        #
+        # if isGoal == True:
+        #     self.startingPosition = state
+        # return isGoal
+        # util.raiseNotDefined()
 
     def getSuccessors(self, state: Any):
         """
@@ -320,18 +376,39 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
+        pacman_position, remaining_corners = state
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
-
             "*** YOUR CODE HERE ***"
+            x,y = pacman_position
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            # print(f"Current State: {state}, Action: {action}, Next State: {nextx, nexty}")
+            hitsWall = self.walls[nextx][nexty]
 
-        self._expanded += 1 # DO NOT CHANGE
+            if not hitsWall:
+                next_position = (nextx, nexty)
+                next_corners = tuple()
+
+                # Populate next_corners using a loop
+                for corner in remaining_corners:
+                    if corner != next_position:
+                        next_corners = next_corners + (corner,)
+
+                next_state = (next_position, next_corners)
+                cost = 1
+                successors.append((next_state, action, cost))
+
+        # Bookkeeping for display purposes
+        self._expanded += 1  # DO NOT CHANGE
+        # if state not in self.visited:
+        #     self.visited[state] = True
+        #     self.visitedlist.append(state)
+
         return successors
+
+        "*** COMPLETED ***"
 
     def getCostOfActions(self, actions):
         """
