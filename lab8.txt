@@ -1,0 +1,26 @@
+punctaj:
+
+mutare: -1
+mancat mancare: 10
+rezolvat solutia: 500
+te-a mancat fantoma: -500
+
+
+
+deadline: 3 decembrie duminica noaptea
+- doar sursele (scripturi .py in care am scris eu cod) -> sunt 3 scripturi
+- documentatie (template pe site in latex)
+    -> cod sursa pt fiecare functie
+    -> probleme intampinate
+    -> bibliografie
+    -> observatii
+
+punctaj: exact ca autograder
+ex: punctaj maxim 36 -> nota maxima 9
+    -> afla punctajul cu regula de 3 simpla
+
+multiagents doar q1 q2 q3
+search q1-q8
+
+7 dec: test concepte (fara cod)
+
